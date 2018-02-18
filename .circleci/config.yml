@@ -50,7 +50,7 @@ jobs:
           name: Save serenity report
           command: |
             mkdir -p ~/serenity/
-            find /full_path -path '.*/target/site/serenity/*.*' -prune -o -type f -print | zip ~/serenity/serenity.zip -@
+            zip -r ~/serenity/serenity.zip .*/target/site/serenity
           when: always
       - store_test_results:
           path: ~/junit
