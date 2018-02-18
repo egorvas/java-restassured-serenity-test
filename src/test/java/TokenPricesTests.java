@@ -3,7 +3,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import io.restassured.response.Response;
 import net.serenitybdd.junit.runners.SerenityRunner;
+import org.hamcrest.Matchers;
 import org.json.simple.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import steps.StepSets;
@@ -51,6 +53,10 @@ public class TokenPricesTests extends StepSets{
                                             .toString(), element.getAsJsonObject().getAsJsonObject("token").
                                             getAsJsonObject("price").get("rate").getAsDouble(),prices.get(0),
                                     prices.get(0)* SystemConstants.ERROR_PERCENT / 100);
+                            Assert.assertThat("Wrong price for token "+object.get("external_id").toString(),
+                                    element.getAsJsonObject().getAsJsonObject("token").getAsJsonObject("price")
+                                            .get("rate").getAsDouble(), Matchers.closeTo(prices.get(0),
+                                    prices.get(0)* SystemConstants.ERROR_PERCENT / 100));
                         }else{
                             logSteps().message("Token without price: "+object.get("external_id"));
                         }
