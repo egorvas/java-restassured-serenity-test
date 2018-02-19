@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class EthplorerSteps extends Ethplorer{
 
-    @Step
+    @Step(callNestedMethods=false)
     public Response getTokenDataFromEthplorer(Object data) {
         Map<String,Object> params = new HashMap<String, Object>();
         params.put("data",data);

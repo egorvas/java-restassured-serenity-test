@@ -8,7 +8,7 @@ import net.thucydides.core.annotations.Step;
 
 public class LogSteps {
 
-    @Step
+    @Step(callNestedMethods=false)
     public void message(String message) {
 
     }

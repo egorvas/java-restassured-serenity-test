@@ -13,8 +13,8 @@ import java.util.Map;
  */
 public class EverexSteps extends Everex{
 
-    @Step
-    public Response getTokensWithPricesFromEverex() {
+    @Step(callNestedMethods=false)
+    public static Response getTokensWithPricesFromEverex() {
         Map<String,Object> params = new HashMap<String, Object>();
         params.put("id","id");
         params.put("method","getTokensWithPrices");

@@ -12,8 +12,8 @@ import java.util.Map;
  */
 public class CoinmarketcapSteps extends Coinmarketcap{
 
-    @Step
-    public Response getRatesFromCoinmarketcap(String convert, int limit) {
+    @Step(callNestedMethods=false)
+    public static Response getRatesFromCoinmarketcap(String convert, int limit) {
         Map<String,Object> params = new HashMap<String, Object>();
         params.put("convert",convert);
         params.put("limit",limit);
