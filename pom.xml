@@ -70,7 +70,8 @@
                     <includes>
                         <include>**/*Tests.java</include>
                     </includes>
-                    <testFailureIgnore>true</testFailureIgnore>
+                    <reuseForks>true</reuseForks>
+                    <testFailureIgnore>false</testFailureIgnore>
                     <encoding>UTF-8</encoding>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                     <systemPropertyVariables>
