@@ -9,7 +9,6 @@
     <properties>
         <serenity.maven.version>1.8.21</serenity.maven.version>
         <serenity.version>1.8.21</serenity.version>
-        <my.plugin.version>1.5</my.plugin.version>
         <coinmarketcap.url></coinmarketcap.url>
         <ethplorer.url></ethplorer.url>
         <everex.url></everex.url>
@@ -102,6 +101,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>

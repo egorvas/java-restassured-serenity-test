@@ -50,47 +50,48 @@ public class TokenPricesTests extends StepSets{
 
     @Test
     public void tokenPricesTest() {
-        String token = this.object.get("external_id").toString();
-        logSteps().message(String.format("Token is %s",token));
-        JsonParser jsonParser =  new JsonParser();
-        Response ethplorerApiResponse = ethplorerSteps().getTokenDataFromEthplorer(this.object.get("address").toString());
-        JsonElement element = jsonParser.parse(ethplorerApiResponse.asString());
-        if (element.getAsJsonObject().get("isContract").getAsBoolean()) {
-            Assert.assertTrue(String.format("Check that object 'price' for token %s exists", token),
-                    element.getAsJsonObject().getAsJsonObject("token").get("price").isJsonObject());
-            Assert.assertTrue(String.format("Check that field 'rate' for token %s exists",token),
-                    element.getAsJsonObject().getAsJsonObject("token").getAsJsonObject("price").get("rate")!=null);
-            Assert.assertTrue(String.format("Check that field 'rate' for token %s not null", token),
-                    !element.getAsJsonObject().getAsJsonObject("token").getAsJsonObject("price").get("rate").isJsonNull());
-            List<Double> prices;
-            if (this.object.containsKey("cmc")) {
-                prices = coinmarketcapResponse.
-                        getList("findAll { it.id == '" + this.object.get("cmc").
-                        toString() + "' }.price_usd", Double.class);
+        if (!this.object.get("address").equals("0x000000000000000000000000000000000000000")) { // ignore ETH token
+            String token = this.object.get("external_id").toString();
+            logSteps().message(String.format("Token is %s", token));
+            JsonParser jsonParser = new JsonParser();
+            Response ethplorerApiResponse = ethplorerSteps().getTokenDataFromEthplorer(this.object.get("address").toString());
+            JsonElement element = jsonParser.parse(ethplorerApiResponse.asString());
+            if (element.getAsJsonObject().get("isContract").getAsBoolean()) {
+                Assert.assertTrue(String.format("Check that object 'price' for token %s exists", token),
+                        element.getAsJsonObject().getAsJsonObject("token").get("price").isJsonObject());
+                Assert.assertTrue(String.format("Check that field 'rate' for token %s exists", token),
+                        element.getAsJsonObject().getAsJsonObject("token").getAsJsonObject("price").get("rate") != null);
+                Assert.assertTrue(String.format("Check that field 'rate' for token %s not null", token),
+                        !element.getAsJsonObject().getAsJsonObject("token").getAsJsonObject("price").get("rate").isJsonNull());
+                List<Double> prices;
+                if (this.object.containsKey("cmc")) {
+                    prices = coinmarketcapResponse.
+                            getList("findAll { it.id == '" + this.object.get("cmc").
+                                    toString() + "' }.price_usd", Double.class);
+
+                } else {
+                    prices = coinmarketcapResponse.
+                            getList("findAll { it.symbol == '" + this.object.get("external_id").
+                                    toString() + "' }.price_usd", Double.class);
+
+                }
+                Assert.assertTrue(String.format("Check that token %s exists in Coinmarketcap response", token),
+                        prices.size() != 0);
+
+                if (prices.size() > 1) {
+                    logSteps().message(String.format("Number of the token %s in Coinmarketcap response is %d)"
+                            , token, prices.size()));
+                }
+
+                Assert.assertThat(String.format("Wrong price for token %s", token), element.getAsJsonObject()
+                                .getAsJsonObject("token").getAsJsonObject("price").get("rate").getAsDouble(),
+                        Matchers.closeTo(prices.get(0), prices.get(0) * SystemConstants.ERROR_PERCENT / 100));
 
             } else {
-                prices = coinmarketcapResponse.
-                        getList("findAll { it.symbol == '" + this.object.get("external_id").
-                        toString() + "' }.price_usd", Double.class);
-
-            }
-            Assert.assertTrue(String.format("Check that token %s exists in Coinmarketcap response", token),
-                    prices.size()!=0);
-
-            if (prices.size() > 1) {
-                logSteps().message(String.format("Number of the token %s in Coinmarketcap response is %d)"
-                        ,token,prices.size()));
+                logSteps().message(String.format("isContract == false for Token %s", token));
             }
 
-            Assert.assertThat(String.format("Wrong price for token %s", token), element.getAsJsonObject()
-                            .getAsJsonObject("token").getAsJsonObject("price").get("rate").getAsDouble(),
-                    Matchers.closeTo(prices.get(0), prices.get(0)* SystemConstants.ERROR_PERCENT / 100));
-
-        }else{
-            logSteps().message(String.format("isContract == false for Token %s",token));
         }
-
-
     }
 
 }
